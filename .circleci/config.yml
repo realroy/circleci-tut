@@ -44,4 +44,4 @@ workflows:
   deploy:
     jobs:
       - test
-- deploy
+      - deploy
