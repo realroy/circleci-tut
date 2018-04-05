@@ -7,7 +7,7 @@ describe('Math', () => {
     })
 
     it('should return 3 when the math expression is 2 + 1', () => {
-      Assert.equal(2 + 1, 3)
+      Assert.equal(2 + 1, 5)
     })
 
     it('should return 4 when the math expression is 2 + 2', () => {
