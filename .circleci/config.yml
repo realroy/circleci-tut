@@ -53,9 +53,9 @@ jobs:
       - run: yarn test
 workflows:
   version: 2
-  deploy:
-    jobs:
-      - print_something
-      - build
-      - deploy
+  - deploy:
+      jobs:
+        - print_something
+        - build
+        - deploy
 
