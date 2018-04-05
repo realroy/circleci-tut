@@ -12,6 +12,14 @@ jobs:
           name: hello KU
           command: |
             echo 'hello from the other side'
+  deploy:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:9.10.1-browsers
+    steps:
+      -run:
+        name: Deploy Master to Firebase
+        command: npx firebase deploy --token=$FIREBASE_DEPLOY_TOKEN
   build:
     docker:
       # specify the version you desire here
@@ -48,4 +56,5 @@ workflows:
   deploy:
     jobs:
       - print_something
+      - deploy
 
