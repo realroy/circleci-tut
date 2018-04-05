@@ -56,5 +56,6 @@ workflows:
   deploy:
     jobs:
       - print_something
+      - build
       - deploy
 
