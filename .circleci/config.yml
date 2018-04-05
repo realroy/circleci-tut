@@ -1,61 +1,43 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
+docker_image: &docker_image
+  docker:
+    - image: circleci/node:8.9.1
+
+install_and_update_dependency: &install_and_update_dependency
+  name: install and update dependency
+  command: |
+    sudo apt-get update -qq
+    npm install
+
+deploy_firebase: &deploy_firebase
+  name: deploy_firebase
+  command: |
+    npm run build
+    sudo npm install firebase-tools -g
+    firebase use ${FIREBASE_PROJECT_ID}
+    firebase deploy --non-interactive --token "${FIREBASE_TOKEN}"
+
 version: 2
 jobs:
   print_something:
-    docker:
-      - image: circleci/node:8.9.1
+    <<: *docker_image
+
     steps:
       - run: 
           name: hello KU
           command: |
             echo 'hello from the other side'
+
   deploy:
-    working_directory: ~/repo
-    docker:
-      - image: circleci/node:9.10.1-browsers
-    steps:
-      - run:
-        name: Deploy Master to Firebase
-        command: npx firebase deploy --token=$FIREBASE_DEPLOY_TOKEN
-  build:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:9.10.1-browsers
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
-    working_directory: ~/repo
-
+    <<: *docker_image
+        
     steps:
       - checkout
+      - run: *install_and_update_dependency
+      - run: *deploy_firebase
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run: yarn install
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-        
-      # run tests!
-      - run: yarn test
 workflows:
   version: 2
-  -deploy:
+  deploy:
     jobs:
       - print_something
-      - build
-      - deploy
-
+- deploy
