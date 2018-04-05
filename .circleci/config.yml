@@ -40,4 +40,4 @@ workflows:
   deploy:
     jobs:
       - print_something
-- deploy
+      - deploy
